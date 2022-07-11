@@ -1,0 +1,8 @@
+fastapi==0.78.0
+fastapi-users[sqlalchemy]
+uvicorn[standard]
+
+alembic
+asyncpg
+
+aiosqlite
