@@ -1,15 +1,16 @@
 import uuid
+from typing import Optional
 
 from fastapi_users import schemas
 
 
 class UserRead(schemas.BaseUser[uuid.UUID]):
-    pass
+    wants_product_updates: Optional[bool] = False
 
 
 class UserCreate(schemas.BaseUserCreate):
-    pass
+    wants_product_updates: Optional[bool] = False
 
 
 class UserUpdate(schemas.BaseUserUpdate):
-    pass
+    wants_product_updates: Optional[bool] = False
