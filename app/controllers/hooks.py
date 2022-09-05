@@ -10,6 +10,7 @@ current_user = fastapi_users.current_user()
 
 @router.get("/", tags=["hooks"])
 async def get_hooks(user: User = Depends(current_active_user)):
+    print(" --- ", user.id)
     return await db.get_all_hooks(user.id)
 
 

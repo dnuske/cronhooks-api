@@ -7,8 +7,8 @@ from app.utils import HookDatatype
 
 async def get_all_hooks(user_id: str):
     async with engine.connect() as conn:
-        result = await conn.execute(text('select id, created_at, updated_at, method, url, body, cron, headers, last_hit, user_id'
-                                         'from hooks where user_id = :user_id;'), {'user_id': user_id})
+        result = await conn.execute(text("""select id, created_at, updated_at, method, url, body, cron, headers, last_hit, user_id
+                                         from hooks where user_id = :user_id;"""), {"user_id": user_id})
         await conn.commit()
         return result.fetchall()
 
@@ -22,10 +22,11 @@ async def create_hook(hook: HookDatatype, user_id: str):
         return True
 
 
-async def get_hook(id: str):
+async def get_hook(_id: str):
     async with engine.connect() as conn:
-        result = await conn.execute(text('''select id, created_at, updated_at, method, url, body, cron, headers, last_hit, user_id from hooks
-            where id = :id;'''), {"id": id})
+        result = await conn.execute(text('''select id, created_at, updated_at, method, url, body, cron, headers, last_hit, user_id 
+            from hooks
+            where id = :id;'''), {"id": _id})
         await conn.commit()
         return result.fetchone()
 
