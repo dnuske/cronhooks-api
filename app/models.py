@@ -68,7 +68,10 @@ class SchedulerTicks(Base):
     __tablename__ = "scheduler_ticks"
     id = Column(String, server_default=text("generate_ulid()"), primary_key=True)
     tick = Column(DateTime, default=datetime.now)
-
+    effectively_ran_at = Column(DateTime, default=datetime.now, nullable=True)
+    ran_until = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+    hook_id = Column(String, ForeignKey('hooks.id'))
+    hit_id = Column(String, ForeignKey('hits.id'))
 
 
 

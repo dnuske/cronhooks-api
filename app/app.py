@@ -3,6 +3,7 @@ from time import sleep
 import logging
 from multiprocessing import Process
 import signal
+import asyncio
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,6 +12,8 @@ from app.schemas import UserCreate, UserRead, UserUpdate
 from app.users import auth_backend, current_active_user, fastapi_users
 from app.controllers import hooks
 from app.models import User
+from app.scheduler import schedule_manager
+from app.scheduler import dispatch
 
 app = FastAPI()
 
@@ -69,26 +72,45 @@ class GracefulExit(Exception):
 def signal_handler(signum, frame):
     raise GracefulExit()
 
-def info(title):
-    print(title)
+async def _main():
     print('module name:', __name__)
     print('parent process:', os.getppid())
     print('process id:', os.getpid())
 
-
-def f(name):
-    info('function f')
-    print('hello', name)
-
     try:
         while (True):
-            print("yeah")
-
-            sleep(5)
+            print("launch pending hooks")
+            try:
+                await dispatch.run()
+            except Exception as e:
+                print("there was an error on main")
+                logging.exception(e)
+            sleep(30)
     except GracefulExit:
         print("Subprocess exiting gracefully")
-    print(" ===== finish starting up ====== ")
 
+    print(" ===== finish main process ====== ")
+
+async def _scheduler():
+    try:
+        while True:
+            try:
+                print("assign next schedule ticks")
+                await schedule_manager.run()
+                print(" == assign next schedule ticks 2")
+            except Exception as e:
+                print("there was an error on scheduler")
+                logging.exception(e)
+            sleep(10)
+    except GracefulExit:
+        print("Subprocess exiting gracefully")
+    print(" ===== finish scheduler process ====== ")
+
+def call_async(func_to_call):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.create_task(func_to_call())
+    loop.run_forever()
 
 
 
@@ -96,10 +118,13 @@ def f(name):
 async def on_startup():
     # Not needed if you setup a migration system like Alembic
     print(" ===== STARTING UP HOOKS PROCESS ====== ")
-    # TODO: catch SIGTERM and pass it on to the subprocess
+    # TODO: catch SIGT ERM and pass it on to the subprocess
     signal.signal(signal.SIGTERM, signal_handler)
 
-    p = Process(target=f, args=('bob',))
+    p = Process(target=call_async, args=(_main,))
+    p.start()
+
+    p = Process(target=call_async, args=(_scheduler,))
     p.start()
 
 @app.on_event("shutdown")
