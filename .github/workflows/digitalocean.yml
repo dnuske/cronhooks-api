@@ -18,6 +18,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: cd /root/code/cronhooks-api/ && git pull origin main
 
+
 #    - name: build docker image
 #      uses: appleboy/ssh-action@master
 #      with:
