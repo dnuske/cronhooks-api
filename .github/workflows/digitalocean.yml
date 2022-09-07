@@ -16,7 +16,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        script: cd /root/code/cronhooks-api/
+        script: cd /root/code/cronhooks-api/ && git pull origin main
 
     - name: build docker image
       uses: appleboy/ssh-action@master
@@ -24,7 +24,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        script: cd code/cronhook-api && git pull origin main
+        script: cd /root/code/cronhooks-api/ && docker build -t cronhooks-api .
 
     - name: run docker image
       uses: appleboy/ssh-action@master
