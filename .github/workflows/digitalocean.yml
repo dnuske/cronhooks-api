@@ -18,7 +18,7 @@ jobs:
 
 
     - name: install necessary packages
-      run: pip install alembic psycopg2 python-dotenv
+      run: pip install -r requirements.txt
 
     - name: run db migrations
       run: alembic upgrade head
