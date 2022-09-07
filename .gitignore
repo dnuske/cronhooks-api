@@ -1,11 +1,4 @@
-<<<<<<< HEAD
 .idea
-app/__pycache__/*
-
-__pycache__/
-*.py[cod]
-*$py.class
-=======
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -135,4 +128,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
->>>>>>> main
+
+.env
