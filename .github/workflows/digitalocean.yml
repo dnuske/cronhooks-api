@@ -10,10 +10,26 @@ jobs:
     name: Deploy to DO
     runs-on: ubuntu-latest
     steps:
-    - name: executing remote ssh commands using key
+    - name: pull latest from repo
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        script: ls
+        script: cd code/cronhook-api && git pull origin main
+
+    - name: build docker image
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: root
+        key: ${{ secrets.SSH_KEY }}
+        script: cd code/cronhook-api && git pull origin main
+
+    - name: run docker image
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: root
+        key: ${{ secrets.SSH_KEY }}
+        script: docker run -p 8000:8000 -e DATABASE_URL=postgresql+asyncpg://danielnuske@host.docker.internal:5432/cronhooks -e DATABASE_URL_PSY=postgresql+psycopg2://danielnuske@host.docker.internal:5432/cronhooks cronhooks-api -D
