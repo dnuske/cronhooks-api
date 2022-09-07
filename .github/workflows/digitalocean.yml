@@ -18,14 +18,17 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: cd /root/code/cronhooks-api/ && git pull origin main
 
+    - name: install necessary packages
+      with:
+        host: ${{ secrets.HOST }}
+        username: root
+      run: pip install alembic psycopg2
 
-#    - name: build docker image
-#      uses: appleboy/ssh-action@master
-#      with:
-#        host: ${{ secrets.HOST }}
-#        username: root
-#        key: ${{ secrets.SSH_KEY }}
-#        script: cd /root/code/cronhooks-api/ && docker-compose up -D
+    - name: run db migrations
+      with:
+        host: ${{ secrets.HOST }}
+      run: alembic upgrade head
+
 
     - name: build docker image
       uses: appleboy/ssh-action@master
