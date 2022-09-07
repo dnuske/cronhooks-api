@@ -19,9 +19,6 @@ jobs:
         script: cd /root/code/cronhooks-api/ && git pull origin main
 
     - name: install necessary packages
-      with:
-        host: ${{ secrets.HOST }}
-        username: root
       run: pip install alembic psycopg2
 
     - name: run db migrations
