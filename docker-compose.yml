@@ -7,10 +7,6 @@ services:
     expose:
       - 8000
     env_file:
-      - VIRTUAL_HOST=api.cronhooks.com
-      - LETSENCRYPT_HOST=api.cronhooks.com
-      - LETSENCRYPT_EMAIL=dnuske@gmail.com
-      - VIRTUAL_PORT=8000
       - ./.env.prod
     networks:
       - local-net
@@ -30,7 +26,7 @@ services:
       - html:/usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
     networks:
-      - mautic-net
+      - local-net
 
   letsencrypt-companion:
     image: jrcs/letsencrypt-nginx-proxy-companion
@@ -44,7 +40,7 @@ services:
     depends_on:
       - proxy
     networks:
-      - mautic-net
+      - local-net
 
 
 volumes:
