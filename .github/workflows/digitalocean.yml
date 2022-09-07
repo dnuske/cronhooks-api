@@ -18,18 +18,18 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: cd /root/code/cronhooks-api/ && git pull origin main
 
+#    - name: build docker image
+#      uses: appleboy/ssh-action@master
+#      with:
+#        host: ${{ secrets.HOST }}
+#        username: root
+#        key: ${{ secrets.SSH_KEY }}
+#        script: cd /root/code/cronhooks-api/ && docker-compose up -D
+
     - name: build docker image
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        script: cd /root/code/cronhooks-api/ && docker build -t cronhooks-api .
-
-    - name: run docker image
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: root
-        key: ${{ secrets.SSH_KEY }}
-        script: docker run -p 8000:8000 -e DATABASE_URL=postgresql+asyncpg://danielnuske@host.docker.internal:5432/cronhooks -e DATABASE_URL_PSY=postgresql+psycopg2://danielnuske@host.docker.internal:5432/cronhooks -d cronhooks-api
+        script: cd /root/code/cronhooks-api/ && docker-compose up -D
