@@ -10,13 +10,9 @@ jobs:
     name: Deploy to DO
     runs-on: ubuntu-latest
     steps:
-    - name: pull latest from repo
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: root
-        key: ${{ secrets.SSH_KEY }}
-        script: cd /root/code/cronhooks-api/ && git pull origin main
+    - name: Checkout
+      uses: actions/checkout@v3
+
 
     - name: install necessary packages
       run: pip install alembic psycopg2
@@ -24,6 +20,14 @@ jobs:
     - name: run db migrations
       run: alembic upgrade head
 
+
+    - name: pull latest from repo
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: root
+        key: ${{ secrets.SSH_KEY }}
+        script: cd /root/code/cronhooks-api/ && git pull origin main
 
     - name: build docker image
       uses: appleboy/ssh-action@master
