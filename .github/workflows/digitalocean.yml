@@ -22,8 +22,6 @@ jobs:
       run: pip install alembic psycopg2
 
     - name: run db migrations
-      with:
-        host: ${{ secrets.HOST }}
       run: alembic upgrade head
 
 
