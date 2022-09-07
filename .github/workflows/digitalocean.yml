@@ -32,4 +32,4 @@ jobs:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        script: docker run -p 8000:8000 -e DATABASE_URL=postgresql+asyncpg://danielnuske@host.docker.internal:5432/cronhooks -e DATABASE_URL_PSY=postgresql+psycopg2://danielnuske@host.docker.internal:5432/cronhooks -d cronhooks-api
+        script: docker run -p 80:8000 -e DATABASE_URL=postgresql+asyncpg://danielnuske@host.docker.internal:5432/cronhooks -e DATABASE_URL_PSY=postgresql+psycopg2://danielnuske@host.docker.internal:5432/cronhooks -d cronhooks-api
