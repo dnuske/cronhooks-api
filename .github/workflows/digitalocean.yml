@@ -33,4 +33,4 @@ jobs:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        script: cd /root/code/cronhooks-api/ && docker-compose up -D
+        script: cd /root/code/cronhooks-api/ && docker-compose up -d
