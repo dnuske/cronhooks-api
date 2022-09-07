@@ -16,6 +16,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: install openssl
+      run: apt install openssl
 
     - name: install necessary packages
       run: pip install -r requirements.txt
