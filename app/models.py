@@ -51,7 +51,7 @@ class Hit(Base):
     started_at = Column(DateTime, default=datetime.now)
     finished_at = Column(DateTime)
     hook_id = Column(String, ForeignKey('hooks.id'))
-    response_status = Column(String)
+    response_status = Column(Integer)
     response_data = Column(String)
 
 # guarantees should be given ran_until should never be more than 1 minute, and should always be closer to 0 as possible
@@ -59,15 +59,6 @@ class Run(Base):
     __tablename__ = "runs"
     id = Column(String, server_default=text("generate_ulid()"), primary_key=True)
     scheduled_at = Column(DateTime, default=datetime.now)
-    effectively_ran_at = Column(DateTime, default=datetime.now, nullable=True)
-    ran_until = Column(DateTime, default=datetime.now, onupdate=datetime.now)
-    hook_id = Column(String, ForeignKey('hooks.id'))
-    hit_id = Column(String, ForeignKey('hits.id'))
-
-class SchedulerTicks(Base):
-    __tablename__ = "scheduler_ticks"
-    id = Column(String, server_default=text("generate_ulid()"), primary_key=True)
-    tick = Column(DateTime, default=datetime.now)
     effectively_ran_at = Column(DateTime, default=datetime.now, nullable=True)
     ran_until = Column(DateTime, default=datetime.now, onupdate=datetime.now)
     hook_id = Column(String, ForeignKey('hooks.id'))

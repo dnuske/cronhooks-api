@@ -13,7 +13,7 @@ from app.users import auth_backend, current_active_user, fastapi_users
 from app.controllers import hooks
 from app.models import User
 from app.scheduler import schedule_manager
-from app.scheduler import dispatch
+from app.scheduler import dispatch_manager
 
 app = FastAPI()
 
@@ -81,7 +81,7 @@ async def _main():
         while (True):
             print("launch pending hooks")
             try:
-                await dispatch.run()
+                await dispatch_manager.run()
             except Exception as e:
                 print("there was an error on main")
                 logging.exception(e)
