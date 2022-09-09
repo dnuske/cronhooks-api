@@ -6,6 +6,17 @@ services:
       dockerfile: Dockerfile
     expose:
       - 8000
+    environment:
+     - DD_API_KEY=${DD_API_KEY}
+     - DD_SITE=us5.datadoghq.com
+     - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+     - DD_DOGSTATSD_URL=udp://datadog:8126
+     - DD_AGENT_HOST=datadog
+     - DD_SERVICE="cronhooks"
+     - DD_ENV="prod"
+     - DD_LOGS_INJECTION=true
+     - DD_TRACE_DEBUG=true
+     - DD_TRACE_STARTUP_LOGS=true
     env_file:
       - ./.env.prod
     networks:
@@ -42,17 +53,23 @@ services:
     networks:
       - local-net
 
-#  datadog:
-#    build: datadog
-#    pid: host
-#    environment:
-#     - DD_API_KEY=${DD_API_KEY}
-#     - DD_SITE=us5.datadoghq.com
-#     - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
-#    volumes:
-#     - /var/run/docker.sock:/var/run/docker.sock
-#     - /proc/:/host/proc/:ro
-#     - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+  datadog:
+    image: gcr.io/datadoghq/agent:latest
+    pid: host
+    cgroupns: host
+    environment:
+     - DD_SITE=us5.datadoghq.com
+     - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+     - DD_API_KEY=a69ac2c24e013c925071ca5d40958064
+     - DD_LOGS_ENABLED=true
+     - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+     - DD_APM_NON_LOCAL_TRAFFIC=true
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock:ro
+     - /var/lib/docker/containers:/var/lib/docker/containers:ro
+     - /proc/:/host/proc/:ro
+     - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
+     - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
 
 volumes:
   certs:
