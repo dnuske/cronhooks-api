@@ -15,6 +15,28 @@ from app.models import User
 from app.scheduler import schedule_manager
 from app.scheduler import dispatch_manager
 
+import logging
+from ddtrace import config, patch_all, patch
+patch(logging=True)
+from ddtrace import tracer
+
+
+config.env = "local"      # the environment the application is in
+config.service = "cronhooks"  # name of your application
+config.version = "0.1"  # version of your application
+
+FORMAT = ('%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] '
+          '[dd.service=%(dd.service)s dd.env=%(dd.env)s dd.version=%(dd.version)s dd.trace_id=%(dd.trace_id)s dd.span_id=%(dd.span_id)s] '
+          '- %(message)s')
+logging.basicConfig(format=FORMAT)
+log = logging.getLogger(__name__)
+log.level = logging.DEBUG
+
+
+
+log.info(" ******************** HELLO ******************** ")
+log.error(" UWU ")
+
 app = FastAPI()
 
 app.include_router(
@@ -72,6 +94,8 @@ class GracefulExit(Exception):
 def signal_handler(signum, frame):
     raise GracefulExit()
 
+
+@tracer.wrap()
 async def _main():
     print('module name:', __name__)
     print('parent process:', os.getppid())
@@ -131,5 +155,5 @@ async def on_startup():
 def shutdown_event():
     print(" ===== shutting down ====== ")
 
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+# logging.basicConfig()
+# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
