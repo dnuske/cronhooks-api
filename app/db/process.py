@@ -23,11 +23,16 @@ async def find_previous_runs(hook_id):
 async def find_not_scheduled_hooks():
     async with engine.connect() as conn:
         result = await conn.execute(text("""select hooks.id as id, created_at, updated_at, method, url, body, cron, headers, last_hit, user_id
-            from hooks
-            left join runs
-            on hooks.id = runs.hook_id
-            where runs.scheduled_at is null
-            or (runs.scheduled_at is null and runs.effectively_ran_at is not null)
+from hooks
+where id not in (select distinct hook_id from runs)
+or id in (
+    select runs.hook_id
+    from runs, (select distinct on (hook_id) hook_id, id as run_id, scheduled_at, effectively_ran_at from runs
+        order by hook_id, scheduled_at desc) n1
+    where runs.id = n1.run_id
+    and   n1.scheduled_at < now()
+    and   n1.effectively_ran_at is not null
+    )
             """))
         await conn.commit()
         return result.fetchall()
@@ -47,7 +52,7 @@ async def find_pending_runs():
 
 async def update_run_effectively_run(run_id, effectively_ran_at):
     async with engine.connect() as conn:
-        r = await conn.execute(text("update runs set effectively_ran_at=:effectively_ran_at where run_id = :run_id"), {"run_id": run_id, "effectively_ran_at": effectively_ran_at})
+        r = await conn.execute(text("update runs set effectively_ran_at=:effectively_ran_at where id = :run_id"), {"run_id": run_id, "effectively_ran_at": effectively_ran_at})
         await conn.commit()
         return True
 

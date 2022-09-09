@@ -22,25 +22,26 @@ async def run():
     hooks = await process.find_pending_runs()
     # update the effectivelly ran for each
     for hook in hooks:
-            started_at = datetime.now()
-            # TODO: deal with time zones eventually
-            process.update_run_effectively_run(hook.run_id, started_at)
-            # make the actual http call
-            response_text = ''
-            try:
-                print(" +++++++++++++ make call", hook.method, hook.url)
-                res = make_call(hook.method, hook.url)
-                response_text = res.text
-            except Exception as e:
-                response_text = str(e)
-                print(e)
+        started_at = datetime.now()
+        # TODO: deal with time zones eventually
+        print('----', hook.run_id, started_at)
+        await process.update_run_effectively_run(hook.run_id, started_at)
+        # make the actual http call
+        response_text = ''
+        try:
+            print(" +++++++++++++ make call", hook.method, hook.url)
+            res = make_call(hook.method, hook.url)
+            response_text = res.text
+        except Exception as e:
+            response_text = str(e)
+            print(e)
 
-            print(" ++++ response ", res.text, res.status_code)
-            finished_at = datetime.now()
+        print(" ++++ response ", res.text, res.status_code)
+        finished_at = datetime.now()
 
-            # update run table record
-            await process.add_hit(hook.id, res.status_code, response_text, started_at, finished_at)
-            # create a hits record with the response of the http call
+        # update run table record
+        await process.add_hit(hook.id, res.status_code, response_text, started_at, finished_at)
+        # create a hits record with the response of the http call
 
 
 
