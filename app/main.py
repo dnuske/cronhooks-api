@@ -16,9 +16,8 @@ from app.scheduler import schedule_manager
 from app.scheduler import dispatch_manager
 
 import logging
-from ddtrace import config, patch_all
-patch_all(logging=True)
-from ddtrace import tracer
+from ddtrace import config, patch
+patch(logging=True, fastapi=True)
 
 
 config.env = "local"      # the environment the application is in
