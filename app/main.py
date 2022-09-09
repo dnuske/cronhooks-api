@@ -16,8 +16,8 @@ from app.scheduler import schedule_manager
 from app.scheduler import dispatch_manager
 
 import logging
-from ddtrace import config, patch_all, patch
-patch(logging=True)
+from ddtrace import config, patch_all
+patch_all(logging=True)
 from ddtrace import tracer
 
 
@@ -95,7 +95,6 @@ def signal_handler(signum, frame):
     raise GracefulExit()
 
 
-@tracer.wrap()
 async def _main():
     print('module name:', __name__)
     print('parent process:', os.getppid())
