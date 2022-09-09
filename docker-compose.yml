@@ -9,11 +9,12 @@ services:
     env_file:
       - ./.env.prod
     environment:
-     - DD_SITE=us5.datadoghq.com
+     - DD_SITE="us5.datadoghq.com"
      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
-     - DD_DOGSTATSD_URL=udp://datadog:8126
-     - DD_AGENT_HOST=datadog
+     - DD_DOGSTATSD_URL="udp://datadog:8126"
+     - DD_AGENT_HOST="datadog"
      - DD_SERVICE="cronhooks"
+     - DD_API_KEY=a69ac2c24e013c925071ca5d40958064
      - DD_ENV="prod"
      - DD_LOGS_INJECTION=true
      - DD_TRACE_DEBUG=true
@@ -68,6 +69,8 @@ services:
      - /proc/:/host/proc/:ro
      - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+    networks:
+      - local-net
 
 volumes:
   certs:
