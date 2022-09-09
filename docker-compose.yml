@@ -56,7 +56,6 @@ services:
   datadog:
     image: gcr.io/datadoghq/agent:latest
     pid: host
-    cgroupns: host
     environment:
      - DD_SITE=us5.datadoghq.com
      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
