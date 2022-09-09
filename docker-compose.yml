@@ -42,6 +42,17 @@ services:
     networks:
       - local-net
 
+#  datadog:
+#    build: datadog
+#    pid: host
+#    environment:
+#     - DD_API_KEY=${DD_API_KEY}
+#     - DD_SITE=us5.datadoghq.com
+#     - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+#    volumes:
+#     - /var/run/docker.sock:/var/run/docker.sock
+#     - /proc/:/host/proc/:ro
+#     - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
 
 volumes:
   certs:
