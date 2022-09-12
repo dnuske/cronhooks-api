@@ -16,21 +16,21 @@ from app.scheduler import schedule_manager
 from app.scheduler import dispatch_manager
 
 import logging
-from ddtrace import config, patch_all
-patch_all(logging=True)
-
-config.env = "local"      # the environment the application is in
-config.service = "cronhooks"  # name of your application
-config.version = "0.1"  # version of your application
-
-config.fastapi['service_name'] = 'custom-service-name'
-config.fastapi['request_span_name'] = 'custom-request-span-name'
-config.debug = True
-
-FORMAT = ('%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] '
-          '[dd.service=%(dd.service)s dd.env=%(dd.env)s dd.version=%(dd.version)s dd.trace_id=%(dd.trace_id)s dd.span_id=%(dd.span_id)s] '
-          '- %(message)s')
-logging.basicConfig(format=FORMAT)
+# from ddtrace import config, patch_all
+# patch_all(logging=True)
+#
+# config.env = "local"      # the environment the application is in
+# config.service = "cronhooks"  # name of your application
+# config.version = "0.1"  # version of your application
+#
+# config.fastapi['service_name'] = 'custom-service-name'
+# config.fastapi['request_span_name'] = 'custom-request-span-name'
+# config.debug = True
+#
+# FORMAT = ('%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] '
+#           '[dd.service=%(dd.service)s dd.env=%(dd.env)s dd.version=%(dd.version)s dd.trace_id=%(dd.trace_id)s dd.span_id=%(dd.span_id)s] '
+#           '- %(message)s')
+# logging.basicConfig(format=FORMAT)
 log = logging.getLogger(__name__)
 log.level = logging.DEBUG
 
