@@ -12,8 +12,8 @@ from app.schemas import UserCreate, UserRead, UserUpdate
 from app.users import auth_backend, current_active_user, fastapi_users
 from app.controllers import hooks
 from app.models import User
-from app.scheduler import schedule_manager
-from app.scheduler import dispatch_manager
+from app.processes import schedule_manager
+from app.processes import dispatch_manager
 
 import logging
 # from ddtrace import config, patch_all
@@ -156,5 +156,5 @@ async def on_startup():
 def shutdown_event():
     print(" ===== shutting down ====== ")
 
-# logging.basicConfig()
-# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)

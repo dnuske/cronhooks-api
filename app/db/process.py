@@ -64,3 +64,8 @@ async def add_hit(hook_id, res_status, res_data, started_at, finished_at):
         await conn.commit()
         return True
 
+async def update_hook_last_hit(hook_id, last_hit):
+    async with engine.connect() as conn:
+        r = await conn.execute(text("update hooks set last_hit=:last_hit where id = :hook_id"), {"hook_id": hook_id, "last_hit": last_hit})
+        await conn.commit()
+        return True

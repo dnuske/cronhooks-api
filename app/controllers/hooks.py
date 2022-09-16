@@ -27,6 +27,7 @@ async def get_hook(id: str, user: User = Depends(current_active_user)):
 @router.put("/{id}", tags=["hooks"])
 async def update_hook(id: str, hook: HookDatatype, user: User = Depends(current_active_user)):
     hook.id = id
+    # TODO: validate only url, cron,
     if api.hook_belongs_to_user(id, user.id):
         return await api.update_hook(hook)
 
