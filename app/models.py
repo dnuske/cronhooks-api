@@ -50,7 +50,7 @@ class Hit(Base):
     id = Column(String, server_default=text("generate_ulid()"), primary_key=True)
     started_at = Column(DateTime, default=datetime.now)
     finished_at = Column(DateTime)
-    hook_id = Column(String, ForeignKey('hooks.id'))
+    hook_id = Column(String, ForeignKey('hooks.id', ondelete="CASCADE"))
     response_status = Column(Integer)
     response_data = Column(String)
 
@@ -61,8 +61,8 @@ class Run(Base):
     scheduled_at = Column(DateTime, default=datetime.now)
     effectively_ran_at = Column(DateTime, default=datetime.now, nullable=True)
     ran_until = Column(DateTime, default=datetime.now, onupdate=datetime.now)
-    hook_id = Column(String, ForeignKey('hooks.id'))
-    hit_id = Column(String, ForeignKey('hits.id'))
+    hook_id = Column(String, ForeignKey('hooks.id', ondelete="CASCADE"))
+    hit_id = Column(String, ForeignKey('hits.id', ondelete="CASCADE"))
 
 
 
