@@ -17,16 +17,17 @@ def make_call(verb, url):
     print(f" << finished call: {verb} {url}")
 
 async def run():
-    print("asdasd")
+    print(" == START RUN PROCESS == ")
     # retrieve all scheduled hooks (ticks without effectively ran at)
     hooks = await process.find_pending_runs()
     # update the effectivelly ran for each
     for hook in hooks:
         try:
+            print(" ==+ RUN run.id, hook.id, url, cron == ", hook.run_id, hook.id, hook.url, hook.cron)
 
             started_at = datetime.now()
             # TODO: deal with time zones eventually
-            print('----', hook.run_id, started_at)
+
             await process.update_run_effectively_run(hook.run_id, started_at)
             # make the actual http call
             response_text = ''
@@ -37,14 +38,19 @@ async def run():
             except Exception as e:
                 response_text = str(e)
                 print(e)
+                finished_at = datetime.now()
 
-            await process.update_hook_last_hit(hook.id, started_at)
+                # create a hits record with the response of the http call
+                await process.add_hit(hook.id, None, str(e), started_at, finished_at)
+
+                continue
+
             print("update_hook_last_hit", hook.id, started_at)
+            await process.update_hook_last_hit(hook.id, started_at)
 
-            print(" ++++ response ", res.text, res.status_code)
             finished_at = datetime.now()
 
-
+            print(" ++++ response ", res.text, res.status_code)
 
             # create a hits record with the response of the http call
             await process.add_hit(hook.id, res.status_code, response_text, started_at, finished_at)
@@ -52,6 +58,8 @@ async def run():
         except Exception as e:
             response_text = str(e)
             print(e)
+
+    print(" == END RUN PROCESS == ")
 
 
 
