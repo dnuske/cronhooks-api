@@ -156,5 +156,5 @@ async def on_startup():
 def shutdown_event():
     print(" ===== shutting down ====== ")
 
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+# logging.basicConfig()
+# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
