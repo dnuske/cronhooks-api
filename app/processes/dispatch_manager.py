@@ -28,36 +28,29 @@ async def run():
             started_at = datetime.now()
             # TODO: deal with time zones eventually
 
+            # update the run date time of start
             await process.update_run_effectively_run(hook.run_id, started_at)
-            # make the actual http call
-            response_text = ''
+
             try:
                 print(" == HIT make call", hook.method, hook.url)
                 res = make_call(hook.method, hook.url)
                 response_text = res.text
+                finished_at = datetime.now()
+                # update last hit date on hook
+                print(" == HIT update_hook_last_hit", hook.id, started_at)
+                await process.update_hook_last_hit(hook.id, started_at)
+                # create a hits record with the response of the http call
+                print(" == HIT response ", res.text, res.status_code)
+                await process.add_hit(hook.id, res.status_code, response_text, started_at, finished_at)
             except Exception as e:
-                response_text = str(e)
-                print(e)
+                print(" == HIT EXCEPTION ", e)
                 finished_at = datetime.now()
 
-                # create a hits record with the response of the http call
+                # create a hits record with the error, but don't update the last hit
                 await process.add_hit(hook.id, None, str(e), started_at, finished_at)
 
-                continue
-
-            print(" == HIT update_hook_last_hit", hook.id, started_at)
-            await process.update_hook_last_hit(hook.id, started_at)
-
-            finished_at = datetime.now()
-
-            print(" == HIT response ", res.text, res.status_code)
-
-            # create a hits record with the response of the http call
-            await process.add_hit(hook.id, res.status_code, response_text, started_at, finished_at)
-
         except Exception as e:
-            response_text = str(e)
-            print(e)
+            print(" == HIT MAIN EXCEPTION ", e)
 
     print(" == HIT END PROCESS == ")
 

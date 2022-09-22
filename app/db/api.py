@@ -50,7 +50,7 @@ async def delete_hook(id: str):
 
 async def get_all_hook_hits(hook_id: str):
     async with engine.connect() as conn:
-        result = await conn.execute(text('select started_at, finished_at, hook_id, response_status, response_data from hits where hook_id=:hook_id order by started_at desc limit 20;'), {"hook_id": hook_id})
+        result = await conn.execute(text('select started_at, finished_at, hook_id, response_status, response_data from hits where hook_id=:hook_id order by started_at desc limit 10;'), {"hook_id": hook_id})
         await conn.commit()
         return result.fetchall()
 
